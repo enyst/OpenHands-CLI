@@ -2,7 +2,7 @@
 
 from textual.app import ComposeResult
 from textual.containers import Container, VerticalScroll
-from textual.widgets import Input, Label, Select, Static
+from textual.widgets import Button, Input, Label, Select, Static
 
 from openhands_cli.tui.modals.settings.choices import (
     provider_options,
@@ -83,8 +83,8 @@ class SettingsTab(Container):
                             disabled=True,
                         )
 
-                # API Key (shown in both modes)
-                with Container(classes="form_group"):
+                # API Key section (shown for non-ChatGPT providers)
+                with Container(id="api_key_section", classes="form_group"):
                     yield Label("API Key:", classes="form_label")
                     yield Input(
                         placeholder="Enter your API key",
@@ -94,6 +94,27 @@ class SettingsTab(Container):
                         # Disabled until model is selected (Basic) or
                         # custom model entered (Advanced)
                         disabled=True,
+                    )
+
+                # ChatGPT Authentication section (shown for ChatGPT provider)
+                with Container(id="chatgpt_auth_section", classes="form_group"):
+                    yield Label("ChatGPT Authentication:", classes="form_label")
+                    yield Static(
+                        "Uses your ChatGPT Plus/Pro subscription.\n"
+                        "No API credits consumed.",
+                        id="chatgpt_auth_help",
+                        classes="form_help",
+                    )
+                    yield Static(
+                        "",
+                        id="chatgpt_auth_status",
+                        classes="form_help",
+                    )
+                    yield Button(
+                        "Sign In with Browser",
+                        id="chatgpt_login_button",
+                        variant="primary",
+                        classes="chatgpt_button",
                     )
 
                 # Memory Condensation
