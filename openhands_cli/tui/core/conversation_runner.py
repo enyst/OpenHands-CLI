@@ -48,6 +48,7 @@ class ConversationRunner:
         env_overrides_enabled: bool = False,
         critic_disabled: bool = False,
         streaming_enabled: bool = False,
+        loop: asyncio.AbstractEventLoop | None = None,
     ):
         """Initialize the conversation runner.
 
@@ -64,6 +65,8 @@ class ConversationRunner:
             critic_disabled: If True, critic functionality will be disabled.
             streaming_enabled: If True, enable token streaming for LLM responses.
                               Default is False for backward compatibility.
+            loop: Event loop for thread-safe streaming callbacks. If provided,
+                  token callbacks will be scheduled on this loop.
         """
         starting_confirmation_policy = initial_confirmation_policy or AlwaysConfirm()
         self.visualizer = visualizer
@@ -75,6 +78,7 @@ class ConversationRunner:
             self._token_streamer = TUITokenStreamer(
                 visualizer=visualizer,
                 write_callback=token_write_callback,
+                loop=loop,
             )
             token_callback = self._token_streamer.on_token
 
